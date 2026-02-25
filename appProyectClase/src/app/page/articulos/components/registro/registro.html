@@ -1,0 +1,69 @@
+<div class="container py-4 animate__animated animate__fadeIn">
+  <div class="row justify-content-center">
+    <div class="col-xl-6 col-lg-8">
+      
+      <div class="text-center mb-4">
+        <div class="bg-success-subtle d-inline-block p-3 rounded-circle mb-3">
+          <i class="bi bi-pencil-square fs-2 text-success"></i>
+        </div>
+        <h2 class="fw-bold text-dark">Registrar Artículo</h2>
+        <p class="text-muted">Ingresa los detalles para dar de alta un nuevo producto.</p>
+      </div>
+
+      <div *ngIf="status" class="alert animate__animated animate__headShake d-flex align-items-center shadow-sm" 
+           [ngClass]="status === 'success' ? 'alert-success' : 'alert-danger'">
+        <i class="bi fs-4 me-3" [ngClass]="status === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-octagon-fill'"></i>
+        <div>
+          {{ mensaje }}
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="card-body p-5">
+          <form (ngSubmit)="onSubmit()" #f="ngForm">
+            
+            <div class="form-floating mb-4">
+              <input 
+                type="text" 
+                class="form-control" 
+                id="nombre" 
+                name="nombre" 
+                placeholder="Nombre del artículo" 
+                [(ngModel)]="nuevoArticulo.nombre" 
+                #nombre="ngModel" 
+                required 
+                minlength="5"
+                [class.is-valid]="nombre.valid && nombre.touched"
+                [class.is-invalid]="nombre.invalid && nombre.touched"
+              >
+              <label for="nombre"><i class="bi bi-tag me-2"></i>Nombre del Artículo</label>
+              <div class="invalid-feedback">
+                <i class="bi bi-info-circle me-1"></i> El nombre debe tener al menos 5 caracteres.
+              </div>
+            </div>
+
+            <div class="row g-2 pt-2">
+              <div class="col-sm-8">
+                <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm" [disabled]="f.invalid || cargando">
+                  <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2"></span>
+                  <i *ngIf="!cargando" class="bi bi-cloud-arrow-up me-2"></i>
+                  {{ cargando ? 'Guardando...' : 'Confirmar Registro' }}
+                </button>
+              </div>
+              <div class="col-sm-4">
+                <button type="button" class="btn btn-outline-secondary btn-lg w-100" routerLink="/articulos">
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <p class="text-center text-muted mt-4 small">
+        <i class="bi bi-shield-lock me-1"></i> Todos los datos serán validados por el servidor antes de guardarse.
+      </p>
+
+    </div>
+  </div>
+</div>
