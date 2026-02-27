@@ -1,15 +1,248 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>AppProyectClase</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda Pro - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+    .active-link { 
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); 
+        color: white !important; 
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+    }
+    .hidden-section { display: none; }
+    .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+    
+    /* Animación suave */
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
-<body>
-  <app-root></app-root>
+<body class="bg-[#f8fafc] min-h-screen flex text-slate-900">
+
+  <aside class="w-80 bg-slate-950 text-slate-400 flex-shrink-0 flex flex-col m-4 rounded-[2.5rem] shadow-2xl transition-all">
+    <div class="p-10">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="bg-indigo-500 p-3 rounded-2xl shadow-lg shadow-indigo-500/30">
+          <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+        <div>
+            <h1 class="text-white text-xl font-extrabold tracking-tight">Tienda<span class="text-indigo-500">Pro</span></h1>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Panel de Control</p>
+        </div>
+      </div>
+      
+      <nav class="space-y-4">
+        <button onclick="cambiarSeccion('seccionCategorias', this)" 
+          class="nav-btn w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 active-link group">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+          <span class="font-bold">Categorías</span>
+        </button>
+        
+        <button onclick="cambiarSeccion('seccionProductos', this)" 
+          class="nav-btn w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 hover:bg-slate-900 hover:text-white group">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+          <span class="font-bold">Productos</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="mt-auto p-10">
+        <div class="bg-slate-900 rounded-3xl p-5 border border-slate-800">
+            <p class="text-xs font-bold text-slate-500 mb-1">SERVIDOR API</p>
+            <p class="text-sm text-indigo-400 font-mono">localhost:8081</p>
+        </div>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-10 h-screen overflow-y-auto overflow-x-hidden">
+    
+    <section id="seccionCategorias" class="max-w-6xl mx-auto fade-in">
+      <header class="flex justify-between items-center mb-12">
+        <div>
+          <h2 class="text-5xl font-extrabold text-slate-900 tracking-tighter">Categorías</h2>
+          <p class="text-slate-500 mt-2 text-lg">Organiza tus productos por familias y grupos.</p>
+        </div>
+        <button onclick="obtenerCategorias()" class="bg-white border-2 border-slate-100 text-slate-600 hover:border-indigo-500 hover:text-indigo-500 p-4 rounded-2xl font-bold transition-all flex items-center gap-2 shadow-sm">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2.5"/></svg>
+        </button>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div class="lg:col-span-4">
+          <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-50 sticky top-0">
+            <h3 class="text-xl font-extrabold text-slate-800 mb-8 flex items-center gap-2">
+                <span class="w-2 h-8 bg-indigo-500 rounded-full"></span>
+                Nueva Categoría
+            </h3>
+            <form id="formCategoria" class="space-y-6">
+              <input type="text" id="nombreCat" placeholder="Nombre de categoría" required class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-indigo-500 focus:bg-white transition-all font-semibold">
+              <textarea id="descCat" placeholder="Descripción opcional..." class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-indigo-500 focus:bg-white transition-all h-32 font-semibold"></textarea>
+              <button type="submit" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-extrabold shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all transform active:scale-95">
+                CREAR AHORA
+              </button>
+            </form>
+          </div>
+        </div>
+        <div id="listaCategorias" class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4 h-fit">
+          </div>
+      </div>
+    </section>
+
+    <section id="seccionProductos" class="max-w-6xl mx-auto hidden-section fade-in">
+      <header class="flex justify-between items-center mb-12">
+        <div>
+          <h2 class="text-5xl font-extrabold text-slate-900 tracking-tighter">Productos</h2>
+          <p class="text-slate-500 mt-2 text-lg">Maneja el stock y los precios de tu inventario.</p>
+        </div>
+        <button onclick="obtenerProductos()" class="bg-white border-2 border-slate-100 text-slate-600 hover:border-fuchsia-500 hover:text-fuchsia-500 p-4 rounded-2xl font-bold transition-all shadow-sm">
+            Refrescar
+        </button>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div class="lg:col-span-4">
+          <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-50 sticky top-0">
+            <h3 class="text-xl font-extrabold text-fuchsia-600 mb-8 flex items-center gap-2">
+                <span class="w-2 h-8 bg-fuchsia-500 rounded-full"></span>
+                Añadir Producto
+            </h3>
+            <form id="formProducto" class="space-y-5">
+              <input type="text" id="nombreProd" placeholder="Nombre del producto" required class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-fuchsia-500 focus:bg-white transition-all font-semibold">
+              
+              <div class="relative">
+                  <label class="text-[10px] font-black text-slate-400 absolute top-2 left-5 z-10">CATEGORÍA</label>
+                  <select id="selectCatProd" required class="w-full p-5 pt-7 bg-fuchsia-50/50 border-2 border-transparent rounded-2xl outline-none focus:border-fuchsia-500 transition-all font-bold text-fuchsia-700 appearance-none cursor-pointer">
+                      <option value="">Selecciona una...</option>
+                  </select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <input type="number" id="precioProd" placeholder="Precio ($)" step="0.01" required class="p-5 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-fuchsia-500 transition-all font-bold">
+                <input type="number" id="stockProd" placeholder="Stock" required class="p-5 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-fuchsia-500 transition-all font-bold">
+              </div>
+              <button type="submit" class="w-full bg-fuchsia-600 text-white py-5 rounded-2xl font-extrabold shadow-xl shadow-fuchsia-100 hover:bg-fuchsia-700 transition-all transform active:scale-95 uppercase tracking-wider">
+                Guardar Producto
+              </button>
+            </form>
+          </div>
+        </div>
+        <div id="listaProductos" class="lg:col-span-8 space-y-4">
+          </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const API_URL = 'http://localhost:8080/api';
+
+    function cambiarSeccion(seccionId, btn) {
+      document.getElementById('seccionCategorias').classList.add('hidden-section');
+      document.getElementById('seccionProductos').classList.add('hidden-section');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-link'));
+      document.getElementById(seccionId).classList.remove('hidden-section');
+      btn.classList.add('active-link');
+    }
+
+    async function obtenerCategorias() {
+      const contenedor = document.getElementById('listaCategorias');
+      const select = document.getElementById('selectCatProd');
+      try {
+        const res = await fetch(`${API_URL}/articulos`);
+        const data = await res.json();
+        
+        contenedor.innerHTML = data.map(cat => {
+          const id = cat.idCategoria || cat.id;
+          return `
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 card-hover transition-all flex flex-col justify-between group">
+              <div class="flex justify-between items-start mb-4">
+                <div class="h-14 w-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl font-black group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                  ${cat.nombre.charAt(0).toUpperCase()}
+                </div>
+                <span class="text-[10px] bg-slate-100 text-slate-500 font-black px-3 py-1 rounded-full">ID: ${id}</span>
+              </div>
+              <div>
+                <h4 class="font-extrabold text-slate-800 text-lg group-hover:text-indigo-600 transition-colors">${cat.nombre}</h4>
+                <p class="text-sm text-slate-400 font-medium line-clamp-2 mt-1">${cat.descripcion || 'Sin descripción detallada.'}</p>
+              </div>
+            </div>
+          `;
+        }).join('') || '<div class="col-span-full text-center py-20 text-slate-400 font-bold">No hay categorías.</div>';
+
+        select.innerHTML = '<option value="">Selecciona una categoría</option>' + 
+          data.map(cat => `<option value="${cat.idCategoria || cat.id}">${cat.nombre.toUpperCase()}</option>`).join('');
+
+      } catch (e) { console.error(e); }
+    }
+
+    async function obtenerProductos() {
+      const contenedor = document.getElementById('listaProductos');
+      try {
+        const res = await fetch(`${API_URL}/productos`);
+        const data = await res.json();
+        contenedor.innerHTML = data.map(p => `
+          <div class="bg-white p-6 rounded-3xl border border-slate-100 card-hover transition-all flex justify-between items-center group">
+            <div class="flex items-center gap-6">
+              <div class="h-16 w-16 bg-fuchsia-50 rounded-[1.5rem] flex items-center justify-center text-fuchsia-600 font-black text-2xl shadow-inner">
+                $
+              </div>
+              <div>
+                <h4 class="font-extrabold text-slate-800 text-xl tracking-tight">${p.nombre}</h4>
+                <div class="flex items-center gap-4 mt-1">
+                  <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-lg font-black text-sm">$${p.precio.toFixed(2)}</span>
+                  <span class="text-slate-400 text-sm font-bold flex items-center gap-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2"/></svg>
+                    Stock: ${p.stock}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="text-right hidden md:block">
+                <p class="text-[10px] font-black text-slate-300 uppercase">Ref. Product</p>
+                <p class="font-mono text-slate-400 text-xs">#00${p.id}</p>
+            </div>
+          </div>
+        `).join('') || '<div class="text-center py-20 text-slate-400 font-bold italic">Inventario vacío.</div>';
+      } catch (e) { console.error(e); }
+    }
+
+    // EVENT LISTENERS DE FORMULARIOS
+    document.getElementById('formCategoria').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const body = { nombre: document.getElementById('nombreCat').value, descripcion: document.getElementById('descCat').value };
+      const res = await fetch(`${API_URL}/articulos`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if(res.ok) { obtenerCategorias(); e.target.reset(); }
+    });
+
+    document.getElementById('formProducto').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const catId = document.getElementById('selectCatProd').value;
+      const body = {
+        nombre: document.getElementById('nombreProd').value,
+        precio: parseFloat(document.getElementById('precioProd').value),
+        stock: parseInt(document.getElementById('stockProd').value),
+        idCategoria: parseInt(catId), // Aseguramos el nombre correcto
+        categoria: { idCategoria: parseInt(catId) } // Mapeo para Hibernate
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/productos`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        if(res.ok) { obtenerProductos(); e.target.reset(); } 
+        else { alert("Error al guardar: Verifica la categoría"); }
+      } catch (e) { alert("Error de conexión"); }
+    });
+
+    window.onload = () => { obtenerCategorias(); obtenerProductos(); };
+  </script>
 </body>
 </html>
